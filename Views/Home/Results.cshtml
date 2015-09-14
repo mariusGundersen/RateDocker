@@ -1,3 +1,4 @@
+@model RateDocker.Controllers.Votes
 @{
     ViewData["Title"] = "Results";
 }
@@ -5,3 +6,10 @@
 <h3>@ViewData["Message"]</h3>
 
 <p>Here are the reseults</p>
+<ol>
+    <li>@Model.Ones
+    <li>@Model.Twos
+    <li>@Model.Threes
+    <li>@Model.Fours
+    <li>@Model.Fives
+</ol>

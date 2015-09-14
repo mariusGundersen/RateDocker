@@ -16,8 +16,8 @@ namespace RateDocker.Controllers
         public IActionResult Results()
         {
             ViewData["Message"] = "Your application description page.";
-
-            return View();
+            
+            return View(Voting.Votes());
         }
 
         public IActionResult Error()
