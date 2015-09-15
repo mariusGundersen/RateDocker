@@ -14,7 +14,9 @@
     "Microsoft.Framework.Configuration.Json": "1.0.0-beta7",
     "Microsoft.Framework.Logging": "1.0.0-beta7",
     "Microsoft.Framework.Logging.Debug" : "1.0.0-beta7",
-    "Microsoft.Framework.Logging.Console": "1.0.0-beta7"
+    "Microsoft.Framework.Logging.Console": "1.0.0-beta7",
+    "SimpleInjector": "3.0.5",
+    "SimpleInjector.Extensions.ExecutionContextScoping": "3.0.5"
   },
 
   "commands": {

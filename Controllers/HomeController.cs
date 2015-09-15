@@ -1,13 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using RateDocker.Repositories;
 
 namespace RateDocker.Controllers
 {
     public class HomeController : Controller
     {
+        IVotingRepository _votingRepository;
+
+        public HomeController(IVotingRepository votingRepository)
+        {
+            _votingRepository = votingRepository;
+        }
+        
         public IActionResult Index()
         {
             return View();
@@ -17,7 +21,7 @@ namespace RateDocker.Controllers
         {
             ViewData["Message"] = "Your application description page.";
             
-            return View(Voting.Votes());
+            return View(_votingRepository.Votes());
         }
 
         public IActionResult Error()

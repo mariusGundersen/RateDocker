@@ -1,18 +1,23 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Mvc;
 using Microsoft.Dnx.Runtime;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
+using SimpleInjector;
+using SimpleInjector.Diagnostics;
+using SimpleInjector.Extensions.ExecutionContextScoping;
+using RateDocker.Repositories;
 
 namespace RateDocker
 {
     public class Startup
     {
+        private Container container = new SimpleInjector.Container();
+        
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
             // Setup configuration sources.
@@ -33,6 +38,8 @@ namespace RateDocker
             // Uncomment the following line to add Web API services which makes it easier to port Web API 2 controllers.
             // You will also need to add the Microsoft.AspNet.Mvc.WebApiCompatShim package to the 'dependencies' section of project.json.
             // services.AddWebApiConventions();
+            
+            services.AddInstance<IControllerActivator>(new SimpleInjectorControllerActivator(this.container));
         }
 
         // Configure is called after ConfigureServices is called.
@@ -69,6 +76,47 @@ namespace RateDocker
                 // Uncomment the following line to add a route for porting Web API 2 controllers.
                 // routes.MapWebApiRoute("DefaultApi", "api/{controller}/{id?}");
             });
+            
+            InitializeContainer(app);
+            RegisterControllers(app);
+    
+            container.Verify(VerificationOption.VerifyAndDiagnose);
+    
+            // Wrap requests in a execution context scope. This allows
+            // scoped instances to be resolved from the container.
+            app.Use(async (context, next) => {
+                using (container.BeginExecutionContextScope()) {
+                    await next();
+                }
+            });
+        }
+        
+        private void InitializeContainer(IApplicationBuilder app)
+        {
+            // For instance: 
+            container.Register<IVotingRepository, VotingRepository>();
+        }
+    
+        private void RegisterControllers(IApplicationBuilder app)
+        {
+            // Register ASP.NET controllers
+            var provider = app.ApplicationServices.GetRequiredService<IControllerTypeProvider>();
+            foreach (var type in provider.ControllerTypes)
+            {
+                var registration = Lifestyle.Transient.CreateRegistration(type, container);
+                container.AddRegistration(type, registration);
+                registration.SuppressDiagnosticWarning(DiagnosticType.DisposableTransientComponent, 
+                    "ASP.NET disposes controllers.");
+            }
+        }
+    }
+    internal sealed class SimpleInjectorControllerActivator : IControllerActivator {
+        private readonly Container container;
+        public SimpleInjectorControllerActivator(Container container) { this.container = container; }
+    
+        [DebuggerStepThrough]
+        public object Create(ActionContext context, Type controllerType) {
+            return container.GetInstance(controllerType);
         }
     }
 }
