@@ -1,14 +1,19 @@
+@using System.Linq
+@model RateDocker.Models.Choices
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "How awesome is Docker?";
 }
-<h2>How awesome is Docker?</h2>
+<h2>@ViewData["Title"]</h2>
+
+
 <form action="Vote/Index" method="post">
-    <ul>
-        <li><label><input type="radio" name="awesomeness" value="1"> Cool</label>
-        <li><label><input type="radio" name="awesomeness" value="2"> Really cool</label>
-        <li><label><input type="radio" name="awesomeness" value="3"> Really fricking cool!</label>
-        <li><label><input type="radio" name="awesomeness" value="4"> Fricking incredible!</label>
-        <li><label><input type="radio" name="awesomeness" value="5"> Mindblowingly awesome!</label>
-    </ul>
+    @foreach(var choice in Model.Names.Select((v, i) => new {Value = i+1, Name = v})){
+        <div class="radio">
+            <label>
+                <input type="radio" name="awesomeness" value="@(choice.Value)">
+                @choice.Name
+            </label>
+        </div>
+    }
     <input type="submit" value="Vote">
 </form>

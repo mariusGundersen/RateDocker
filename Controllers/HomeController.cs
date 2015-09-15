@@ -1,4 +1,5 @@
 using Microsoft.AspNet.Mvc;
+using RateDocker.Models;
 using RateDocker.Repositories;
 
 namespace RateDocker.Controllers
@@ -14,7 +15,7 @@ namespace RateDocker.Controllers
         
         public IActionResult Index()
         {
-            return View();
+            return View(new Choices());
         }
 
         public IActionResult Results()

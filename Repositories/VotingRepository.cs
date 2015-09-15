@@ -20,9 +20,11 @@ namespace RateDocker.Repositories
 		}
 		
 		public Votes Votes(){
+			var choices = new Choices();
+			
             return new Votes
 			{
-				Results = Enumerable.Range(1,5).Select(x => new Vote(votes.Count(v => v == x), votes.Count)).ToList()
+				Results = Enumerable.Range(1,5).Select(x => new Vote(choices.Names[x-1], votes.Count(v => v == x), votes.Count)).ToList()
 			};
 		}
     }
