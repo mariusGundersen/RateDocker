@@ -13,25 +13,25 @@ namespace RateDocker.Controllers
 		public static Votes Votes(){
             return new Votes
 			{
-				Ones = votes.Where(v => v == 1).Count(),
-				Twos = votes.Where(v => v == 2).Count(),
-				Threes = votes.Where(v => v == 3).Count(),
-				Fours = votes.Where(v => v == 4).Count(),
-				Fives = votes.Where(v => v == 5).Count()
+				Results = Enumerable.Range(1,5).Select(x => new Vote(votes.Count(v => v == x), votes.Count)).ToList()
 			};
 		}
 	}
 	
 	public class Votes
 	{
-		public int Ones { get; set; }
+		public IReadOnlyCollection<Vote> Results {get; set;}
+	}
+	
+	public class Vote
+	{
+		public Vote(int count, int total){
+			Count = count;
+			Percentage = total == 0 ? 0 : count*100m/total;
+		}
 		
-		public int Twos { get; set; }
+		public int Count {get; set;}
 		
-		public int Threes { get; set; }
-		
-		public int Fours { get; set; }
-		
-		public int Fives { get; set; }
+		public decimal Percentage {get; set;}
 	}
 }

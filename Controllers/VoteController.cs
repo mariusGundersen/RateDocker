@@ -9,7 +9,7 @@ namespace RateDocker.Controllers
     public class VoteController : Controller
     {
 		[HttpPost]
-        public IActionResult Index([FromBody]int awesomeness)
+        public IActionResult Index(int awesomeness)
         {
             Voting.Vote(awesomeness);
             return new RedirectToActionResult("Results", "Home", null);
