@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using RateDocker.Models;
 using RateDocker.Repositories;
@@ -18,11 +19,11 @@ namespace RateDocker.Controllers
             return View(new Choices());
         }
 
-        public IActionResult Results()
+        public async Task<IActionResult> Results()
         {
             ViewData["Message"] = "Your application description page.";
             
-            return View(_votingRepository.Votes());
+            return View(await _votingRepository.Votes());
         }
 
         public IActionResult Error()

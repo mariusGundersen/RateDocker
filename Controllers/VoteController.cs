@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using RateDocker.Repositories;
 
@@ -13,9 +14,9 @@ namespace RateDocker.Controllers
         }
         
 		[HttpPost]
-        public IActionResult Index(int awesomeness)
+        public async Task<IActionResult> Index(int awesomeness)
         {
-            _votingRepository.Vote(awesomeness);
+            await _votingRepository.Vote(awesomeness);
             return new RedirectToActionResult("Results", "Home", null);
         }
     }
