@@ -11,12 +11,17 @@ using SimpleInjector;
 using SimpleInjector.Diagnostics;
 using SimpleInjector.Extensions.ExecutionContextScoping;
 using RateDocker.Repositories;
+using Couchbase;
+using System.Collections.Generic;
+using Couchbase.Configuration.Client;
 
 namespace RateDocker
 {
     public class Startup
     {
         private Container container = new SimpleInjector.Container();
+        
+        private ClientConfiguration couchbaseConfiguration;
         
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
@@ -77,6 +82,14 @@ namespace RateDocker
                 // routes.MapWebApiRoute("DefaultApi", "api/{controller}/{id?}");
             });
             
+            couchbaseConfiguration = new ClientConfiguration
+            {
+                Servers = new List<Uri>
+                {
+                    new Uri(Configuration.GetSection("AppSettings:DatabaseUrl").Value)
+                }
+            };
+            
             InitializeContainer(app);
             RegisterControllers(app);
     
@@ -95,6 +108,7 @@ namespace RateDocker
         {
             // For instance: 
             container.Register<IVotingRepository, VotingRepository>();
+            container.Register<Cluster>(() => new Cluster(couchbaseConfiguration), Lifestyle.Singleton);
         }
     
         private void RegisterControllers(IApplicationBuilder app)

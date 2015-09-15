@@ -1,5 +1,6 @@
 {
   "AppSettings": {
-    "SiteTitle": "RateDocker"
+    "SiteTitle": "RateDocker",
+    "DatabaseUrl": "http://couchbase:8091/pools"
   }
 }
