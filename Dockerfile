@@ -5,5 +5,5 @@ WORKDIR /app
 RUN ["dnu", "restore"] 
 COPY . /app 
 
-EXPOSE 5004 
+EXPOSE 5000
 ENTRYPOINT ["dnx", "-p", "project.json", "kestrel"]
